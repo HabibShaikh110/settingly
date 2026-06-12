@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Cmd+K Settings",
+  "version": "1.0.0",
+  "description": "Press Cmd+K (Ctrl+K on Windows/Linux) to instantly search and navigate settings on any SaaS page.",
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}
