@@ -461,57 +461,44 @@
 
   /* ─── AI Functions ─── */
 
-  async function fetchAIInstructions(query, domain, pageTitle) {
+  function fetchAIInstructions(query, domain, pageTitle) {
     if (state.aiLoading) return;
     state.aiQuery = query;
     state.aiResponse = '';
     state.aiLoading = true;
     state.aiMode = true;
-    state.aiController = new AbortController();
+    state.aiController = null;
     renderAIView();
+
     try {
-      const response = await fetch(AI_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, domain, pageTitle }),
-        signal: state.aiController.signal,
-      });
-      if (!response.ok) {
-        state.aiResponse = 'AI search failed. Check your backend endpoint.';
-        state.aiLoading = false;
-        renderAIView();
-        return;
-      }
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const payload = line.slice(6).trim();
-            if (!payload) continue;
-            try {
-              const parsed = JSON.parse(payload);
-              if (parsed.done) break;
-              if (parsed.text) {
-                state.aiResponse += parsed.text;
-                renderAIView();
-              }
-            } catch {}
-          }
+      const port = chrome.runtime.connect({ name: 'ai-search' });
+      state.aiController = port;
+
+      port.onMessage.addListener((msg) => {
+        if (msg.type === 'chunk') {
+          state.aiResponse += msg.text;
+          renderAIView();
+        } else if (msg.type === 'error') {
+          state.aiResponse = 'AI search failed.';
+          state.aiLoading = false;
+          renderAIView();
+        } else if (msg.type === 'done') {
+          state.aiLoading = false;
+          renderAIView();
         }
-      }
+      });
+
+      port.onDisconnect.addListener(() => {
+        if (state.aiLoading) {
+          state.aiResponse = state.aiResponse || 'AI search failed.';
+          state.aiLoading = false;
+          renderAIView();
+        }
+      });
+
+      port.postMessage({ query, domain, pageTitle });
     } catch (err) {
-      if (err.name !== 'AbortError') {
-        state.aiResponse = 'Error: ' + err.message;
-        renderAIView();
-      }
-    } finally {
+      state.aiResponse = 'Error: ' + err.message;
       state.aiLoading = false;
       renderAIView();
     }
@@ -560,7 +547,7 @@
     state.aiResponse = '';
     state.aiQuery = '';
     if (state.aiController) {
-      state.aiController.abort();
+      state.aiController.disconnect();
       state.aiController = null;
     }
     state.input.value = '';
@@ -655,7 +642,7 @@
   function open() {
     if (state.isOpen || state.destroyed) return;
     if (state.aiController) {
-      state.aiController.abort();
+      state.aiController.disconnect();
       state.aiController = null;
     }
     state.aiMode = false;
@@ -711,7 +698,7 @@
   function close() {
     if (!state.isOpen) return;
     if (state.aiController) {
-      state.aiController.abort();
+      state.aiController.disconnect();
       state.aiController = null;
     }
     state.aiMode = false;

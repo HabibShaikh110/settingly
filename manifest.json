@@ -4,6 +4,12 @@
   "version": "1.0.0",
   "description": "Press Cmd+K (Ctrl+K on Windows/Linux) to instantly search and navigate settings on any SaaS page.",
   "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": [
+    "https://settingly.onrender.com/*"
+  ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
