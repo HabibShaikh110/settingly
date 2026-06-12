@@ -18,10 +18,11 @@ They searched for: "${query}"
 
 Give clear, step-by-step instructions on where to find this setting.
 Be specific about which menus, tabs, and buttons to click.
-If unsure about the exact location, describe where it is commonly found.
+If you are unsure about the exact location, say so clearly and suggest where else to look.
+If the setting may not exist on this site, say that honestly.
+Interfaces vary between users (different plans, regions, or UI versions), so note when something might be in a different spot.
 Format as a numbered list. Keep each step concise (1 line).
-If the setting does not exist on this site, say so clearly.
-Do not mention that you are an AI or that you lack real-time access — just give the steps directly.`;
+Do not mention that you are an AI. Just give the steps directly.`;
 
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');

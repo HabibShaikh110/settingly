@@ -522,7 +522,21 @@
     if (state.aiLoading && !state.aiResponse) {
       content.innerHTML = '<div class="sk-ai-loading"><span></span><span></span><span></span></div>';
     } else if (state.aiResponse) {
-      content.innerHTML = formatAIResponse(state.aiResponse);
+      content.innerHTML = `
+        <div class="sk-ai-disclaimer">
+          <span class="sk-ai-disclaimer-icon">&#x2139;&#xFE0F;</span>
+          <div>
+            <div class="sk-ai-disclaimer-title">AI-guided — might vary</div>
+            <div class="sk-ai-disclaimer-text">These steps are generated based on common layouts. Your page may differ. If something doesn&apos;t match, try a different search term.</div>
+          </div>
+        </div>
+        <div class="sk-ai-steps">${formatAIResponse(state.aiResponse)}</div>
+        <div class="sk-ai-try-again">
+          <div class="sk-ai-try-again-label">Not what you&apos;re looking for?</div>
+          <button class="sk-ai-try-back-btn">&#x2190; Try a different search</button>
+        </div>
+      `;
+      content.querySelector('.sk-ai-try-back-btn').addEventListener('click', backToResults);
       if (state.aiLoading) {
         content.innerHTML += '<div class="sk-ai-loading"><span></span><span></span><span></span></div>';
       }
