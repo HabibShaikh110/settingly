@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  const AI_ENDPOINT = 'https://settingly.onrender.com.api/search';
+  const AI_ENDPOINT = 'https://settingly.onrender.com/api/search';
   const KEYWORDS = new Set([
     'settings', 'setting', 'preferences', 'preference', 'configuration', 'config',
     'options', 'option', 'account', 'profile', 'billing', 'team', 'workspace',
