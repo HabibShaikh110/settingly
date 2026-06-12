@@ -363,7 +363,7 @@
   align-items: flex-start;
   gap: 10px;
   padding: 10px 12px;
-  margin: 6px 0;
+  margin: 10px 0;
   background: var(--sk-surface);
   border: 1px solid var(--sk-border);
   border-radius: 8px;
@@ -374,12 +374,12 @@
 }
 
 .sk-ai-line {
-  padding: 3px 0;
+  padding: 5px 0;
   color: var(--sk-text-secondary);
 }
 
 .sk-ai-line:first-of-type {
-  margin-top: 4px;
+  margin-top: 8px;
 }
 
 /* ─── AI Loading ─── */

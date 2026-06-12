@@ -513,7 +513,6 @@
     header.className = 'sk-ai-header';
     header.innerHTML = `
       <button class="sk-back-btn">&larr; Back</button>
-      <span class="sk-ai-badge">AI</span>
       <span class="sk-ai-query">&#x1F50D; ${escapeHTML(state.aiQuery)}</span>
     `;
     header.querySelector('.sk-back-btn').addEventListener('click', backToResults);
